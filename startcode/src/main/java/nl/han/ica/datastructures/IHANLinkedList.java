@@ -26,15 +26,16 @@ public interface IHANLinkedList<T> extends Iterable<T>{
     void delete(int pos);
 
     /**
-     * Returns generic value T at postion
+     * Returns generic value T at position
      * @param pos position to look up value
      * @return value at position pos
      */
     T get(int pos);
 
     /**
-     * Removes first element
-     */
+     * Removes first element     */
+
+
     void removeFirst();
 
     /**
@@ -48,4 +49,10 @@ public interface IHANLinkedList<T> extends Iterable<T>{
      * @return number of items in list
      */
     int getSize();
+
+    /**
+     * Determines if the list is empty or not
+     * @return
+     */
+    public boolean isEmpty();
 }
