@@ -52,7 +52,7 @@ public class EvalExpressions implements Transform {
                     child.removeChild(child);
                     node.addChild(literal);
                 } catch (UnknownVariableException e) {
-                    child.setError("Hier zou die niet moeten komen");
+                    child.setError("Hier zou die niet moeten komen, er is een variabele onbekend...");
                 }
             } else if (child instanceof Declaration) {
                 checkDeclarations(child);
