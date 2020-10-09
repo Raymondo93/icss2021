@@ -25,29 +25,26 @@ public class EvalExpressions implements Transform {
 
     private IHANLinkedList<HashMap<String, Literal>> variableValues;
 
-    public EvalExpressions() {
-        //variableValues = new HANLinkedList<>();
-    }
-
     @Override
     public void apply(AST ast) {
         variableValues = new HANLinkedList<>();
-        for (ASTNode parent: ast.root.getChildren()) {
-            if (parent instanceof VariableAssignment) {
+        for (ASTNode parent: ast.root.getChildren()) { // Loop through children of stylesheet
+            if (parent instanceof VariableAssignment) { // Set variables in LinkedList
                 setVariablesInList(parent);
-            } else if (parent instanceof Stylerule) {
+            } else if (parent instanceof Stylerule) { // Loop through children of stylerule
                 for (ASTNode styleRule: parent.getChildren()) {
-                    if (styleRule instanceof Declaration) {
+                    if (styleRule instanceof Declaration) { //loop through children of declaration
                         checkDeclarations(styleRule);
-                    } else if (styleRule instanceof IfClause) {
-                        checkVariablesInIfClauses(styleRule);
+                    } else if (styleRule instanceof IfClause) { // Loop through if clause
+                        checkIfClauses(styleRule);
                     }
                 }
             }
         }
     }
 
-    private void checkVariablesInIfClauses(ASTNode node) {
+    // Loop through children of a if clause and set the real values for a variable
+    private void checkIfClauses(ASTNode node) {
         for (ASTNode child: node.getChildren()) {
             if (child instanceof VariableReference) {
                 try {
@@ -62,11 +59,12 @@ public class EvalExpressions implements Transform {
             } else if (child instanceof ElseClause) {
                 checkDeclarations(child);
             } else if (child instanceof IfClause) {
-                checkVariablesInIfClauses(child);
+                checkIfClauses(child);
             }
         }
     }
 
+    // Loop through the children of a declaration and set the real values for a variable
     private void checkDeclarations(ASTNode node) {
         for (ASTNode child: node.getChildren()) {
             if (child instanceof VariableReference) {
@@ -85,6 +83,7 @@ public class EvalExpressions implements Transform {
         }
     }
 
+    // Get the variable from a the list. Throws an exception when a variable is undefined. But it shouldn't come to this
     private Literal getVariableFromList(VariableReference reference) throws UnknownVariableException {
         for (int i = 0; i < variableValues.getSize(); ++i) {
             if (variableValues.get(i).containsKey(reference.name)) {
@@ -94,6 +93,7 @@ public class EvalExpressions implements Transform {
         throw new UnknownVariableException();
     }
 
+    // Calculate the operation
     private Literal handleOperation(ASTNode node) {
         Operation operation = (Operation) node;
         Expression literal = null;

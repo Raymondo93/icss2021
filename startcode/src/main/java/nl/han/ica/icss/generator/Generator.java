@@ -20,6 +20,7 @@ import java.util.PriorityQueue;
 
 public class Generator {
 
+    // Generate stylesheet
     public String generate(AST ast) {
         String styleSheet = "";
         for (ASTNode node : ast.root.getChildren()) {
@@ -30,15 +31,11 @@ public class Generator {
         return styleSheet;
     }
 
+    // Generate a style rule
     private String generateStyleRule(ASTNode node) {
         String styleRule = "";
-        boolean firstSelector = true;
         for (ASTNode child : node.getChildren()) {
             if (child instanceof Selector) {
-//				if (firstSelector) {
-//					styleRule = styleRule.concat("} \n \n");
-//					firstSelector = false;
-//				}
                 String selector = getSelector((Selector) child);
                 styleRule = styleRule.concat(selector);
             } else if (child instanceof Declaration) {
@@ -50,6 +47,7 @@ public class Generator {
         return styleRule;
     }
 
+    // Generate all declarations
     private String generateDeclarations(ASTNode node) {
         String declaration = "";
         for (ASTNode child : node.getChildren()) {
@@ -64,6 +62,7 @@ public class Generator {
         return declaration;
     }
 
+    // Generate literal of the generation
     private String getLiteral(Literal literal) {
         if (literal instanceof ColorLiteral) {
             return ((ColorLiteral) literal).value + "; \n";
@@ -76,6 +75,7 @@ public class Generator {
         }
     }
 
+    // Generate selector
     private String getSelector(Selector selector) {
         if (selector instanceof ClassSelector) {
             return ((ClassSelector) selector).cls + " { \n";

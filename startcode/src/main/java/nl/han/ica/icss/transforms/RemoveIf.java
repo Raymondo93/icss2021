@@ -14,13 +14,13 @@ public class RemoveIf implements Transform {
 
     @Override
     public void apply(AST ast) {
-        for (ASTNode parent: ast.root.getChildren()) {
+        for (ASTNode parent: ast.root.getChildren()) { // Loop through the children of Stylesheet
             if (parent instanceof Stylerule) {
-                for (ASTNode ifClause: parent.getChildren()) {
+                for (ASTNode ifClause: parent.getChildren()) { // Loop through the children StyleRule
                     if (ifClause instanceof IfClause) {
                         ArrayList<ASTNode> nodes = checkIfClause(ifClause);
                         parent.removeChild(ifClause);
-                        for (ASTNode n: nodes) {
+                        for (ASTNode n: nodes) {        // Loop through the children of IfClause
                             parent.addChild(n);
                         }
                     }
@@ -35,12 +35,13 @@ public class RemoveIf implements Transform {
         BoolLiteral condition = (BoolLiteral) ifClause.conditionalExpression;
         ArrayList<ASTNode> nodes = new ArrayList<>();
         if (condition.value) {
-            for (ASTNode declaration : ifClause.body) {
+            for (ASTNode declaration : ifClause.body) {   // Loop through Declarations
                 if (declaration instanceof Declaration) {
                     nodes.add(declaration);
                 } else if (declaration instanceof IfClause) {
                     ArrayList<ASTNode> recursiveIfs;
                     recursiveIfs = checkIfClause(declaration);
+                    // Loop through recursive if clauses and add to arraylist
                     for (ASTNode recursiveDeclaration : recursiveIfs) {
                         if (recursiveDeclaration instanceof Declaration) {
                             nodes.add(recursiveDeclaration);
@@ -49,7 +50,7 @@ public class RemoveIf implements Transform {
                 }
             }
         } else {
-            for (ASTNode elseClause: node.getChildren()) {
+            for (ASTNode elseClause: node.getChildren()) { // Loop through else clause
                 if (elseClause instanceof ElseClause) {
                     for (ASTNode declaration : ((ElseClause) elseClause).body) {
                         nodes.add(declaration);
@@ -58,7 +59,7 @@ public class RemoveIf implements Transform {
             }
         }
         for (ASTNode recursiveIfClauses: node.getChildren()) {
-            if (recursiveIfClauses instanceof IfClause) {
+            if (recursiveIfClauses instanceof IfClause) { // Loop through recursive if clauses and call this function
                 ArrayList<ASTNode> n;
                 n = checkIfClause(recursiveIfClauses);
                 nodes.addAll(n);
