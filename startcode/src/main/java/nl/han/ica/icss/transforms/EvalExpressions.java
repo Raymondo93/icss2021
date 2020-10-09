@@ -1,22 +1,25 @@
 package nl.han.ica.icss.transforms;
 
-import com.sun.security.jgss.GSSUtil;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
-import nl.han.ica.icss.ast.*;
+import nl.han.ica.icss.ast.AST;
+import nl.han.ica.icss.ast.ASTNode;
+import nl.han.ica.icss.ast.Declaration;
+import nl.han.ica.icss.ast.ElseClause;
+import nl.han.ica.icss.ast.Expression;
+import nl.han.ica.icss.ast.IfClause;
+import nl.han.ica.icss.ast.Literal;
+import nl.han.ica.icss.ast.Operation;
+import nl.han.ica.icss.ast.Stylerule;
+import nl.han.ica.icss.ast.VariableAssignment;
+import nl.han.ica.icss.ast.VariableReference;
 import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
-import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.MultiplyOperation;
-import nl.han.ica.icss.ast.operations.SubtractOperation;
-import nl.han.ica.icss.ast.types.ExpressionType;
-import nl.han.ica.icss.parser.ASTListener;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class EvalExpressions implements Transform {
 
@@ -37,28 +40,48 @@ public class EvalExpressions implements Transform {
                     if (styleRule instanceof Declaration) {
                         checkDeclarations(styleRule);
                     } else if (styleRule instanceof IfClause) {
-                        System.out.println("zitten de if clauses een stappie hogert");
+                        checkVariablesInIfClauses(styleRule);
                     }
                 }
             }
         }
     }
 
-    private void checkDeclarations(ASTNode node) {
-        for (ASTNode declaration: node.getChildren()) {
-            if (declaration instanceof VariableReference) {
+    private void checkVariablesInIfClauses(ASTNode node) {
+        for (ASTNode child: node.getChildren()) {
+            if (child instanceof VariableReference) {
                 try {
-                    Literal literal = getVariableFromList((VariableReference) declaration);
-                    declaration.removeChild(declaration);
+                    Literal literal = getVariableFromList((VariableReference) child);
+                    child.removeChild(child);
                     node.addChild(literal);
                 } catch (UnknownVariableException e) {
-                    declaration.setError("Dit kan niet gebeuren.");
+                    child.setError("Hier zou die niet moeten komen");
                 }
-            } else if (declaration instanceof Operation) {
-                Literal literal = handleOperation(declaration);
-                node.removeChild(declaration);
+            } else if (child instanceof Declaration) {
+                checkDeclarations(child);
+            } else if (child instanceof ElseClause) {
+                checkDeclarations(child);
+            } else if (child instanceof IfClause) {
+                checkVariablesInIfClauses(child);
+            }
+        }
+    }
+
+    private void checkDeclarations(ASTNode node) {
+        for (ASTNode child: node.getChildren()) {
+            if (child instanceof VariableReference) {
+                try {
+                    Literal literal = getVariableFromList((VariableReference) child);
+                    child.removeChild(child);
+                    node.addChild(literal);
+                } catch (UnknownVariableException e) {
+                    child.setError("Dit kan niet gebeuren.");
+                }
+            } else if (child instanceof Operation) {
+                Literal literal = handleOperation(child);
+                node.removeChild(child);
                 node.addChild(literal);
-            } 
+            }
         }
     }
 

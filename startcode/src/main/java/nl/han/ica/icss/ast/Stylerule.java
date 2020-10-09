@@ -30,6 +30,12 @@ public class Stylerule extends ASTNode {
 		return children;
 	}
 
+	@Override
+	public ASTNode removeChild(ASTNode child) {
+		body.remove(child);
+		return this;
+	}
+
     @Override
     public ASTNode addChild(ASTNode child) {
 		if(child instanceof Selector)

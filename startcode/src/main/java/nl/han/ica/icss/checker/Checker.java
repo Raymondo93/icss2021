@@ -7,9 +7,7 @@ import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.Expression;
 import nl.han.ica.icss.ast.IfClause;
-import nl.han.ica.icss.ast.Literal;
 import nl.han.ica.icss.ast.Operation;
-import nl.han.ica.icss.ast.Selector;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.VariableAssignment;
 import nl.han.ica.icss.ast.VariableReference;
@@ -18,12 +16,11 @@ import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
-import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+
 
 
 public class Checker {
