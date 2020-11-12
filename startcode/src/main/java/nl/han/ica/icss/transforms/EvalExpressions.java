@@ -18,7 +18,9 @@ import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
+import org.checkerframework.checker.units.qual.A;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EvalExpressions implements Transform {
@@ -41,6 +43,21 @@ public class EvalExpressions implements Transform {
                 }
             }
         }
+        // Remove variable assignments from tree
+        ast = removeVariableAssignments(ast);
+    }
+
+    private AST removeVariableAssignments(AST ast) {
+        ArrayList<ASTNode> variableAssignments = new ArrayList<>();
+        for (ASTNode v: ast.root.getChildren()) {
+            if (v instanceof VariableAssignment) {
+                variableAssignments.add(v);
+            }
+        }
+        for (int i = 0; i < variableAssignments.size(); ++i) {
+            ast.root.removeChild(variableAssignments.get(i));
+        }
+        return ast;
     }
 
     // Loop through children of a if clause and set the real values for a variable

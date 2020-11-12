@@ -1,4 +1,4 @@
-LinkColor := #ff0000;
+LinkColor := #ff0001;
 ParWidth := 500px;
 AdjustColor := TRUE;
 UseLinkColor := FALSE;
