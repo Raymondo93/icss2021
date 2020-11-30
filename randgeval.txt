@@ -1,0 +1,18 @@
+Color := #ff0000;
+Pixel := 500px;
+Percentage := 75%;
+Scalar := 13;
+Color2 := Color;
+
+.var-assignment-and-usage {
+    Extra := 50px;
+    color: Color;
+    width: Pixel;
+    height: Percentage;
+    background-color: Scalar;
+    width: Extra;
+}
+
+#double-ref {
+    color: Color2;
+}
